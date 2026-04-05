@@ -39,6 +39,7 @@ import { PawIcon } from './icons/PawIcon';
 import { MessageActions } from './MessageActions';
 import { MessageNavigator } from './MessageNavigator';
 import { MobileStatusSheet } from './MobileStatusSheet';
+import { IntentionSidebar } from './IntentionSidebar';
 import { ParallelStatusBar } from './ParallelStatusBar';
 import { ProjectSetupCard } from './ProjectSetupCard';
 import { QueuePanel } from './QueuePanel';
@@ -612,6 +613,11 @@ export function ChatContainer({ threadId }: ChatContainerProps) {
             observerKey={threadId}
           />
           {messages.length > 5 && <MessageNavigator messages={messages} scrollContainerRef={scrollContainerRef} />}
+
+          {/* L1 MVP: 意图气泡 — 固定在视口右下角 */}
+          <div className="fixed bottom-16 right-4 w-72 z-30">
+            <IntentionSidebar />
+          </div>
         </div>
 
         {authPending.length > 0 && (

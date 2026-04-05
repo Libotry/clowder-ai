@@ -112,6 +112,18 @@ export interface SocketCallbacks {
     reason: 'canceled' | 'failed';
     queue: import('../stores/chat-types').QueueEntry[];
   }) => void;
+  /** L1 MVP: 意图气泡更新 */
+  onIntentionUpdate?: (entry: {
+    catId: string;
+    intent: string;
+    type: 'analyzing' | 'implementing' | 'waiting' | 'blocked';
+    taskId?: string;
+    blockers?: string;
+    urgency: number;
+    reportedAt: number;
+  }) => void;
+  /** L1 MVP: 意图气泡清除 */
+  onIntentionCleared?: (data: { catId: string; taskId: string | null }) => void;
 }
 
 const RECONNECT_RECONCILE_DELAY_MS = 2000;
@@ -463,6 +475,15 @@ export function useSocket(callbacks: SocketCallbacks, threadId?: string) {
 
     socket.on('task_updated', (task: Record<string, unknown>) => {
       callbacksRef.current.onTaskUpdated?.(task);
+    });
+
+    // L1 MVP: 意图气泡 WebSocket 事件
+    socket.on('intention_update', (entry: Parameters<NonNullable<typeof callbacksRef.current.onIntentionUpdate>>[0]) => {
+      callbacksRef.current.onIntentionUpdate?.(entry);
+    });
+
+    socket.on('intention_cleared', (data: Parameters<NonNullable<typeof callbacksRef.current.onIntentionCleared>>[0]) => {
+      callbacksRef.current.onIntentionCleared?.(data);
     });
 
     socket.on('thread_summary', (summary: Record<string, unknown>) => {

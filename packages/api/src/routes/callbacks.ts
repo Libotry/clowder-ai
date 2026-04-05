@@ -37,6 +37,8 @@ import { registerCallbackMemoryRoutes } from './callback-memory-routes.js';
 import { getMultiMentionOrchestrator, registerMultiMentionRoutes } from './callback-multi-mention-routes.js';
 import { registerCallbackTaskRoutes } from './callback-task-routes.js';
 import { registerCallbackWorkflowSopRoutes } from './callback-workflow-sop-routes.js';
+import { registerCallbackIntentionRoutes } from './callback-intention-routes.js';
+import { registerCallbackDecisionLogRoutes } from './callback-decision-log-routes.js';
 import { type FeatIndexEntry, readFeatIndexEntries } from './feat-index-doc-import.js';
 import { detectUserMention } from './user-mention.js';
 import { clearVoteTimer, closeVoteInternal, voteTimers } from './votes.js';
@@ -1270,6 +1272,12 @@ export const callbacksRoutes: FastifyPluginAsync<CallbackRoutesOptions> = async 
   if (opts.threadStore) {
     registerCallbackBootcampRoutes(app, { registry, threadStore: opts.threadStore });
   }
+
+  // L1 MVP: 意图气泡后端 — 猫猫上报意图，通过 WebSocket 广播给前端
+  registerCallbackIntentionRoutes(app, { registry, socketManager });
+
+  // P0 MVP: Decision Log — 决策日志，复用内存存储
+  registerCallbackDecisionLogRoutes(app, { registry });
 
   await registerCallbackMemoryRoutes(app, {
     registry,

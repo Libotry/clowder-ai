@@ -4,6 +4,7 @@ import type { SocketCallbacks } from '@/hooks/useSocket';
 import { type ChatMessage as ChatMessageData, useChatStore } from '@/stores/chatStore';
 import { useGameStore } from '@/stores/gameStore';
 import { type TaskItem, useTaskStore } from '@/stores/taskStore';
+import { useIntentionStore } from '@/stores/intentionStore';
 
 interface ExternalDeps {
   threadId: string;
@@ -42,6 +43,7 @@ export function useChatSocketCallbacks({
     requestStreamCatchUp,
   } = useChatStore();
   const { addTask, updateTask } = useTaskStore();
+  const { setIntention, clearIntention } = useIntentionStore();
 
   return useMemo<SocketCallbacks>(
     () => ({
@@ -64,6 +66,16 @@ export function useChatSocketCallbacks({
       },
       onTaskCreated: (task) => addTask(task as unknown as TaskItem),
       onTaskUpdated: (task) => updateTask(task as unknown as TaskItem),
+      // L1 MVP: 意图气泡
+      onIntentionUpdate: (entry) => setIntention(entry),
+      onIntentionCleared: (data) => {
+        if (data.taskId) {
+          clearIntention(data.catId, data.taskId);
+        } else {
+          // No taskId → clear all intentions for this cat
+          clearIntention(data.catId);
+        }
+      },
       onThreadSummary: (summary) => {
         const s = summary as {
           id: string;
@@ -123,6 +135,8 @@ export function useChatSocketCallbacks({
       setTargetCats,
       addTask,
       updateTask,
+      setIntention,
+      clearIntention,
       addMessage,
       removeThreadMessage,
       requestStreamCatchUp,

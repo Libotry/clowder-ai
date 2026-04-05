@@ -93,6 +93,24 @@ export {
 } from './session-chain-tools.js';
 export { signalStudyTools } from './signal-study-tools.js';
 export {
+  intentionTools,
+  clearIntentionInputSchema,
+  handleClearIntention,
+  handleReportIntention,
+  reportIntentionInputSchema,
+} from './intention-tools.js';
+export {
+  decisionLogTools,
+  acknowledgeDecisionInputSchema,
+  checkContextInputSchema,
+  createDecisionInputSchema,
+  handleAcknowledgeDecision,
+  handleCheckContext,
+  handleCreateDecision,
+  handleListDecisions,
+  listDecisionsInputSchema,
+} from './decision-log-tools.js';
+export {
   handleSignalGetArticle,
   handleSignalListInbox,
   handleSignalMarkRead,

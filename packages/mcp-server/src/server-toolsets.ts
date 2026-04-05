@@ -2,8 +2,10 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
   callbackMemoryTools,
   callbackTools,
+  decisionLogTools,
   evidenceTools,
   gameActionTools,
+  intentionTools,
   limbTools,
   reflectTools,
   richBlockRulesTools,
@@ -25,6 +27,8 @@ const collabTools: readonly ToolDef[] = [
   ...richBlockRulesTools,
   ...gameActionTools,
   ...scheduleTools,
+  ...intentionTools,
+  ...decisionLogTools,
 ];
 
 const memoryTools: readonly ToolDef[] = [
